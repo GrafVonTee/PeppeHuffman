@@ -14,16 +14,22 @@ string getInputFromFile(std::string path) {
     std::ifstream inf(path);
     std::stringstream buffer;
     if (!inf) {
-        std::cerr << "You are Gay!" << std::endl;
+        std::cerr << "File " << path << " not found!" << std::endl;
+        inf.close();
         exit(1);
     }
     buffer << inf.rdbuf();
     return buffer.str();
 }
 
-void compressFile(string path_to_file, string &input) {
+void compressFile(string path, string &input) {
     using namespace std;
-    ofstream output(path_to_file, ios::binary);
+    ofstream output(path, ios::binary);
+    if (!output) {
+        std::cerr << "Access to file " << path << " denied!" << std::endl;
+        output.close();
+        exit(1);
+    }
     string total;
     std::vector<unsigned char> bin;
     char elem;
@@ -45,6 +51,11 @@ void compressFile(string path_to_file, string &input) {
 string readCompressFile(string path) {
     using namespace std;
     ifstream inf(path, ios::binary);
+    if (!inf) {
+        std::cerr << "File " << path << " not found!" << std::endl;
+        inf.close();
+        exit(1);
+    }
     string temp;
     vector<char> buffer(istreambuf_iterator<char>(inf), {});
     for (auto b: buffer) {
@@ -55,10 +66,12 @@ string readCompressFile(string path) {
 
 void uncompressFile(string path, string &data) {
     using namespace std;
-    ofstream ouf;
-    ouf.open(path);
-    if (!ouf)
-        cerr << "You are Gay!" << endl;
+    ofstream ouf(path);
+    if (!ouf) {
+        std::cerr << "Access to file " << path << " denied!" << std::endl;
+        ouf.close();
+        exit(1);
+    }
     string substr;
     for (int i = 0; i < data.length(); ++i)
         for (int j = i+1; j < data.length(); ++j) {

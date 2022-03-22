@@ -53,6 +53,11 @@ void getTableFromFile(string path) {
     using namespace std;
     ifstream inf(path);
     stringstream sbuffer;
+    if (!inf) {
+        std::cerr << "File " << path << " not found!" << std::endl;
+        inf.close();
+        exit(1);
+    }
     sbuffer << inf.rdbuf();
     char *normal_string = (char*) calloc(sbuffer.str().length(), sizeof(char));
     strcpy(normal_string, sbuffer.str().c_str());

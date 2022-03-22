@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include "HuffNode.h"
 #include "PriorityQueue.h"
@@ -5,22 +6,68 @@
 #include "Tables.h"
 #include "CompressFiles.h"
 
-int main() {
-    string input = getInputFromFile("../Lorem Compressus1.txt");
-    PriorityQueue queue_of_symbols = getAllSymbols(input);
-    printQueue(queue_of_symbols.head, "../priority_list.txt");
+using std::string;
 
-    HuffNode *tree = createHuffmanTree(queue_of_symbols);
-    getTableInfix(tree, "");
-    printTable("../compress_values.txt");
+enum Operation {
+    Compress,
+    Decompress,
+    Error
+};
 
-    compressFile("../Lorem Compressus.txt", input);
-    string compress_file = readCompressFile("../Lorem Compressus.txt");
+string getPath(string mode) {
+    string path;
+    std::cout << "Enter " << mode << " file\'s path: ";
+    getline(std::cin, path);
+    return path;
+}
 
-    getTableFromFile("../compress_values.txt");
-    printNewTable("");
+Operation getOperation() {
+    string input;
+    std::cout << "Choose operation (compress, decompress): ";
+    std::cin >> input;
+    std::cin.ignore();
+    if (input == "compress")
+        return Compress;
+    else if (input == "decompress")
+        return Decompress;
+    std::cerr << "Incorrect operation!" << std::endl;
+    return Error;
+}
 
-    uncompressFile("../Lorem Compressus1.txt", compress_file);
+void doOperation(Operation oper, string &cur_dir) {
+    string input;
+    HuffNode *tree;
+    string compress_file;
+    PriorityQueue queue_of_symbols;
+    switch (oper) {
+        case Compress:
+            input = getInputFromFile(cur_dir + getPath("to-compress"));
+            queue_of_symbols = getAllSymbols(input);
+            printQueue(queue_of_symbols.head, cur_dir + "priority_list.txt");
 
+            tree = createHuffmanTree(queue_of_symbols);
+            getTableInfix(tree, "");
+            printTable(cur_dir + "compress_values.txt");
+
+            compressFile(cur_dir + getPath("output"), input);
+            std::cout << "Compress Successful!" << std::endl;
+            break;
+        case Decompress:
+             compress_file = readCompressFile(cur_dir + getPath("to-decompress"));
+
+            getTableFromFile(cur_dir + "compress_values.txt");
+            printNewTable("");
+
+            uncompressFile(cur_dir + getPath("output"), compress_file);
+            std::cout << "Decompress Successful!" << std::endl;
+            break;
+        default:
+            break;
+    }
+}
+
+int main(int argc, char *argv[]) {
+    string current_dir = argv[1];
+    doOperation(getOperation(), current_dir);
     return 0;
 }
