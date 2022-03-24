@@ -43,7 +43,7 @@ void compressFile(string path, string &input) {
     }
     extern string cur_dir;
     ofstream append_output(cur_dir + "compress_values.txt", ios::app);
-    while (total.length() < 8) {
+    while (total.length() && total.length() < 8) {
         total += "0";
         append_output << "0";
     }
