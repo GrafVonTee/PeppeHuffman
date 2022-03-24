@@ -66,8 +66,10 @@ void doOperation(Operation oper, string &cur_dir) {
     }
 }
 
+string cur_dir;
+
 int main(int argc, char *argv[]) {
-    string current_dir = argv[1];
-    doOperation(getOperation(), current_dir);
+    cur_dir = argv[1];
+    doOperation(getOperation(), cur_dir);
     return 0;
 }

@@ -9,6 +9,7 @@
 
 using namespace std;
 
+int deleted_nulls;
 std::map<char, string> table;
 std::map<string, char> new_table;
 
@@ -63,6 +64,11 @@ void getTableFromFile(string path) {
     strcpy(normal_string, sbuffer.str().c_str());
     char *token = strtok(normal_string, "\\");
     while (token != nullptr) {
+        if (!strchr(token, '-')) {
+            deleted_nulls = strlen(token);
+            return;
+        }
+
         char a;
         char *b = (char*) calloc(50, sizeof(char));
         sscanf(token, "%c -- %s", &a, b);

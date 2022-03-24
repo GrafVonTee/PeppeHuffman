@@ -10,10 +10,8 @@ struct PriorityQueue {
     int size = 0;
 };
 
-using namespace std;
-
 void pushToQueue(PriorityQueue &queue, HuffNode value);
 HuffNode *getTopFromQueue(PriorityQueue &queue);
 void popFromQueue(PriorityQueue &queue);
-PriorityQueue getAllSymbols(string &input);
-void printQueue(QueueNode *qq, string outf);
+PriorityQueue getAllSymbols(std::string &input);
+void printQueue(QueueNode *qq, std::string outf);

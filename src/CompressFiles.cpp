@@ -41,8 +41,15 @@ void compressFile(string path, string &input) {
             total = total.substr(8, total.length() - 8);
         }
     }
-    while (total.length() < 8)
+    extern string cur_dir;
+    ofstream append_output(cur_dir + "compress_values.txt", ios::app);
+    while (total.length() < 8) {
         total += "0";
+        append_output << "0";
+    }
+    append_output << endl;
+    append_output.close();
+
     bin.push_back(bitset<8>(total.substr(0, total.length())).to_ulong());
     for (auto b : bin)
         output.write((char *) & b, sizeof(char));
@@ -73,8 +80,13 @@ void uncompressFile(string path, string &data) {
         exit(1);
     }
     string substr;
+    extern int deleted_nulls;
     for (int i = 0; i < data.length(); ++i)
         for (int j = i+1; j < data.length(); ++j) {
+            if (i == data.length() - deleted_nulls) {
+                ouf.close();
+                return;
+            }
             substr = data.substr(i, j-i);
             if (elemIsExistsInNewTable(substr)) {
                 i = j;
